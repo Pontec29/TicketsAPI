@@ -1,4 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using TicketsAPI.Data;
+using TicketsAPI.Repository;
+using TicketsAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// En Azure, ConnectionStrings__TicketsDb llega como App Setting con referencia a Key Vault.
+var connectionString = builder.Configuration.GetConnectionString("TicketsDb")
+    ?? throw new InvalidOperationException("Falta la cadena de conexión ConnectionStrings:TicketsDb.");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString, sql => sql.EnableRetryOnFailure()));
+
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ITicketService, TicketService>();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
