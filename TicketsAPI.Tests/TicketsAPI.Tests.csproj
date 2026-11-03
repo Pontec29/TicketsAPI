@@ -26,8 +26,8 @@
 
   <!-- Los mismos scripts de /db se aplican en las pruebas de integración: así se verifica el esquema real. -->
   <ItemGroup>
-    <None Include="..\..\db\01_schema.sql" Link="Scripts\01_schema.sql" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\db\02_seed.sql" Link="Scripts\02_seed.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\db\01_schema.sql" Link="Scripts\01_schema.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\db\02_seed.sql" Link="Scripts\02_seed.sql" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
