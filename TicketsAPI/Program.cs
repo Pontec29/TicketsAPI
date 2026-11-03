@@ -51,3 +51,6 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+// Permite que WebApplicationFactory<Program> levante la API en las pruebas de integración.
+public partial class Program { }
