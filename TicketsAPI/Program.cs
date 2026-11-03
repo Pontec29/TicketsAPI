@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
@@ -8,9 +9,21 @@ using TicketsAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// En Azure, ConnectionStrings__TicketsDb llega como App Setting con referencia a Key Vault.
-var connectionString = builder.Configuration.GetConnectionString("TicketsDb")
-    ?? throw new InvalidOperationException("Falta la cadena de conexión ConnectionStrings:TicketsDb.");
+// En Development la cadena sale de appsettings.Development.json (arranque sin fricción).
+// Fuera de Development, si nadie la inyectó, se lee de Key Vault: el secreto
+// "ConnectionStrings--DefaultConnection" se convierte en ConnectionStrings:DefaultConnection
+// y DefaultAzureCredential usa la Managed Identity del App Service.
+var keyVaultUri = builder.Configuration["KeyVault:Uri"];
+if (!builder.Environment.IsDevelopment()
+    && string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("DefaultConnection"))
+    && !string.IsNullOrWhiteSpace(keyVaultUri))
+{
+    builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+}
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException(
+        "No se pudo obtener ConnectionStrings:DefaultConnection. Configura KeyVault:Uri con la URI del vault.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString, sql => sql.EnableRetryOnFailure()));
@@ -45,8 +58,9 @@ app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors("Frontend");
 
-// OpenAPI se publica en todos los entornos para que sea accesible desde Azure.
+// OpenAPI y Swagger UI se publican en todos los entornos para que sean accesibles desde Azure.
 app.MapOpenApi();
+app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "TicketsAPI v1"));
 app.MapControllers();
 app.MapHealthChecks("/health");
 

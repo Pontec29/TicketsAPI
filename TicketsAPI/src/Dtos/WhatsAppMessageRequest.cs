@@ -6,7 +6,7 @@ namespace TicketsAPI.Dtos;
 public class WhatsAppMessageRequest : IValidatableObject
 {
     [Required]
-    [RegularExpression("mensaje recibido")]
+    [RegularExpression("^mensaje\\.recibido$")]
     public string Evento { get; init; } = string.Empty;
 
     [Required]

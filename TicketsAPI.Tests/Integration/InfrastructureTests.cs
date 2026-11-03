@@ -48,6 +48,14 @@ public class InfrastructureTests(ApiFixture factory)
     }
 
     [Fact]
+    public async Task SwaggerUi_EstaDisponible()
+    {
+        var response = await factory.CreateClient().GetAsync("/swagger/index.html");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
     public async Task ExcepcionNoControlada_Devuelve500ConProblemDetailsSinDetallesInternos()
     {
         var servicioRoto = Substitute.For<ITicketService>();

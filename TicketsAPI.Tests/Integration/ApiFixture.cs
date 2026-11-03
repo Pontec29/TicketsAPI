@@ -25,7 +25,7 @@ public class ApiFixture : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Development");
-        builder.UseSetting("ConnectionStrings:TicketsDb", ConnectionString);
+        builder.UseSetting("ConnectionStrings:DefaultConnection", ConnectionString);
         builder.UseSetting("Cors:AllowedOrigins:0", OrigenPermitido);
     }
 
