@@ -24,10 +24,10 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Build with dotnet
-        run: dotnet build TicketsAPI/TicketsAPI.csproj --configuration Release
+        run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish TicketsAPI/TicketsAPI.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -51,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_57066B13CCAF4DD8A59CACBC7787F9CA }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2AC52F429120437E9797C38B814D5E65 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5F73BE0659E14313867693F2A14E1433 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B88CE0D3962F482CA671844278377104 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C6506A628A9941D1B53010B174663DEC }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A32050AEBD274010BB78646D7138C7A5 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
